@@ -34,8 +34,8 @@ void main() {
           .thenAnswer((_) => Future.value(expectedTransactionResponse));
       // when
       final transactionResponse = await database.transactional(() async {
-        final specification = Specification();
-        specification.equals('id', id);
+        final specification = Specification()
+            .equals('id', id);
         final objects = await dataSource.find(specification);
         final actualObject = objects[0];
         actualObject['data'] = newData;

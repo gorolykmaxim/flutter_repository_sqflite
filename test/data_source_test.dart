@@ -14,11 +14,9 @@ void main() {
   const expectedResults = [{'name': userName}];
   MockBatch batch;
   sqflite.Database database;
-  Specification specification;
   group('ReadonlyDataSource', () {
     ReadonlyDataSource dataSource;
     setUp(() async {
-      specification = Specification();
       database = MockDatabase();
       dataSource = (await createDatabase(database)).readonlyTable(table);
     });
@@ -27,16 +25,17 @@ void main() {
       const expectedWhere = '(name = ? AND (age > ? OR (age > ? AND hasFamily = ?) OR ((hasPermission = ? OR needsPermission = ?) AND funds > ?)))';
       when(database.query(table, where: expectedWhere, whereArgs: ['Tom', 15, 18, true, true, false, 125], limit: defaultLimit, offset: defaultOffset))
           .thenAnswer((_) => Future.value(expectedResults));
-      specification.equals('name', userName);
-      specification.add(Condition.or([
-        Condition.greaterThan('age', 15),
-        Condition.and([Condition.greaterThan('age', 18), Condition.equals('hasFamily', true)]),
-        Condition.and([
-          Condition.or([
-            Condition.equals('hasPermission', true),
-            Condition.equals('needsPermission', false),
-          ]),
-          Condition.greaterThan('funds', 125)
+      final specification = Specification()
+          .equals('name', userName)
+          .add(Condition.or([
+            Condition.greaterThan('age', 15),
+            Condition.and([Condition.greaterThan('age', 18), Condition.equals('hasFamily', true)]),
+            Condition.and([
+              Condition.or([
+                Condition.equals('hasPermission', true),
+                Condition.equals('needsPermission', false),
+              ]),
+              Condition.greaterThan('funds', 125)
         ])
       ]));
       // when
@@ -48,7 +47,7 @@ void main() {
       // given
       when(database.query(table, where: '(name = ?)', whereArgs: [userName], limit: defaultLimit, offset: defaultOffset))
           .thenAnswer((_) => Future.value(expectedResults));
-      specification.equals('name', userName);
+      final specification = Specification().equals('name', userName);
       // when
       final results = await dataSource.find(specification);
       // then
@@ -60,9 +59,10 @@ void main() {
       const offset = 50;
       when(database.query(table, where: '(name = ?)', whereArgs: [userName], limit: limit, offset: offset))
           .thenAnswer((_) => Future.value(expectedResults));
-      specification.equals('name', userName);
-      specification.limit = limit;
-      specification.offset = offset;
+      final specification = Specification()
+          .equals('name', userName)
+          .setLimit(limit)
+          .setOffset(offset);
       // when
       final results = await dataSource.find(specification);
       // then
@@ -73,7 +73,7 @@ void main() {
       when(database.query(table, limit: defaultLimit, offset: defaultOffset))
           .thenAnswer((_) => Future.value(expectedResults));
       // when
-      final results = await dataSource.find(specification);
+      final results = await dataSource.find(Specification());
       // then
       expect(results, expectedResults);
     });
@@ -81,8 +81,9 @@ void main() {
       // given
       when(database.query(table, orderBy: 'name ASC, age DESC', limit: defaultLimit, offset: defaultOffset))
           .thenAnswer((_) => Future.value(expectedResults));
-      specification.appendOrderDefinition(Order.ascending('name'));
-      specification.appendOrderDefinition(Order.descending('age'));
+      final specification = Specification()
+          .appendOrderDefinition(Order.ascending('name'))
+          .appendOrderDefinition(Order.descending('age'));
       // when
       final results = await dataSource.find(specification);
       // then
@@ -93,7 +94,7 @@ void main() {
       when(database.query(table, limit: defaultLimit, offset: defaultOffset))
           .thenAnswer((_) => Future.error(MockException()));
       // when
-      expect(dataSource.find(specification), throwsA(isInstanceOf<DatabaseException>()));
+      expect(dataSource.find(Specification()), throwsA(isInstanceOf<DatabaseException>()));
     });
   });
   group('DataSource', () {
@@ -103,7 +104,6 @@ void main() {
     setUp(() async {
       database = MockDatabase();
       batch = MockBatch();
-      specification = Specification();
       context = EntityContext({'id': 15, 'name': 'Tom', 'age': 15}, ['id']);
       updateEntity = {
         'name': context.entity['name'],
@@ -145,7 +145,8 @@ void main() {
     test('removes all entities, matching the specification', () async {
       // given
       const age = 14;
-      specification.greaterThan('age', age);
+      final specification = Specification()
+          .greaterThan('age', age);
       // when
       await dataSource.removeMatching(specification);
       // then
@@ -153,14 +154,15 @@ void main() {
     });
     test('removes all entities', () async {
       // when
-      await dataSource.removeMatching(specification);
+      await dataSource.removeMatching(Specification());
       // then
       verify(database.delete(table)).called(1);
     });
     test('fails to remove entities, matching the specification', () async {
       // given
       const name = 'Tom';
-      specification.equals('name', name);
+      final specification = Specification()
+          .equals('name', name);
       when(database.delete(table, where: '(name = ?)', whereArgs: [name]))
           .thenAnswer((_) => Future.error(MockException()));
       // when

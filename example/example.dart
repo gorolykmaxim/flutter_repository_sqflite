@@ -56,8 +56,8 @@ class TweetFactory {
   TweetFactory(this._random, this._comments, this._commentFactory);
 
   Tweet create(String author, String body, {int id}) {
-    final belongToThisTweet = Specification();
-    belongToThisTweet.equals('TWEET_ID', id);
+    final belongToThisTweet = Specification()
+        .equals('TWEET_ID', id);
     Collection<Comment> tweetsComments = PrivateCollection(belongToThisTweet, _comments);
     return Tweet(id ?? _random.nextInt(1000), author, body, tweetsComments, _commentFactory);
   }

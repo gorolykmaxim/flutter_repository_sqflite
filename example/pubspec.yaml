@@ -1,0 +1,5 @@
+name: flutter_repository_sqflite_example
+
+dependencies:
+  flutter_repository: ^1.0.0
+  flutter_repository_sqflite: ^1.0.0
