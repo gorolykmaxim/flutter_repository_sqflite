@@ -1,6 +1,6 @@
 name: flutter_repository_sqflite
 description: Implementation of flutter_repository collections, that houses data in an sqlite database.
-version: 1.0.1
+version: 1.0.2
 author: Horoliuk Maksym <goroliuk.maksym@gmail.com>
 homepage: https://github.com/gorolykmaxim/flutter_repository_sqflite
 

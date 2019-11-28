@@ -12,5 +12,8 @@ void main() {
     test('creates a version object', () {
       expect(Version(1).toInt(), 1);
     });
+    test('two versions with the same value should be equal', () {
+      expect(Version(1), Version(1));
+    });
   });
 }

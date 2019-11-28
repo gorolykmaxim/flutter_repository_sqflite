@@ -21,4 +21,14 @@ class Version implements Comparable<Version> {
   int compareTo(Version other) {
     return _value.compareTo(other.toInt());
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Version &&
+              runtimeType == other.runtimeType &&
+              _value == other._value;
+
+  @override
+  int get hashCode => _value.hashCode;
 }
