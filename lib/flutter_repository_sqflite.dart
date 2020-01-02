@@ -5,6 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'src/data_source.dart';
 import 'src/migration.dart';
 
+export 'src/mocks.dart';
 export 'src/persistence.dart';
 export 'src/exceptions.dart';
 export 'src/migration.dart';

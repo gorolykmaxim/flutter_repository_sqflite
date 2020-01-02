@@ -1,3 +1,7 @@
+## [1.2.0]
+Add mocks to classes, that are going to be mocked by library
+users in the unit tests.
+
 ## [1.1.1]
 Make previously introduced classes publicly available.
 

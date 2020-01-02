@@ -1,6 +1,6 @@
 name: flutter_repository_sqflite
 description: Implementation of flutter_repository collections, that houses data in an sqlite database.
-version: 1.1.1
+version: 1.2.0
 homepage: https://github.com/gorolykmaxim/flutter_repository_sqflite
 
 environment:
@@ -9,10 +9,10 @@ environment:
 dependencies:
   flutter_repository: ^1.0.0
   sqflite: ^1.1.7+1
+  mockito: ^4.1.1
   flutter:
     sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^4.1.1
